@@ -4,6 +4,9 @@ var domain = '';
 //fis.config.set('settings.postpackager.simple.autoReflow', true);
 fis.config.merge({
     statics: dir,
+    project: {
+        exclude: /^\/node_modules/i
+    },
     roadmap: {
         domain: domain,
         relative: true,
@@ -43,7 +46,7 @@ fis.config.merge({
             },
             {
                 //图片等媒体文件
-                reg: /^(.*)\.(jpg|gif|png|mp3|mp4|ttf|pdf)$/i,
+                reg: /^(.*)\.(json|jpg|gif|png|mp3|mp4|ttf|pdf)$/i,
                 release: '${statics}/$&'
             },
             {

@@ -20,6 +20,7 @@ body{
 	perspective: 1000px;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 .cube-box{
 	transform-style: preserve-3d;
@@ -28,8 +29,9 @@ body{
 	height: 601px;
 	left: 50%;
 	top: 50%;
-	transform: translate3D(-50%, -50%, -1300.5px);
-	transition: all 1s cubic-bezier(0, 1.0, 0.5, 1.0);
+	transform: translate3D(-50%, -50%, -3000.5px);
+	/*transition: all 1s cubic-bezier(0, 1.0, 0.5, 1.0);*/
+
 	.cube-item{
 		backface-visibility: hidden;
 		width: 100%;
@@ -72,7 +74,6 @@ body{
 		transform: rotateX(-90deg) translateZ(300.5px);
 	}
 }
-
 
 
 	ul{

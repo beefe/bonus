@@ -12,50 +12,85 @@ var promise = new Promise(function(resolve, reject){
 	});
 });
 promise.then(function(json){
-	json.forEach(function(v){
-		var url = './portrait/' + v['姓名'] + '.jpg';
-		$.get(url, function(ret){
-
-		}, function(ret){
-			console.log(ret);
-		});
+	var users = json.map(function(v){
+		var tag = v['a'];
+		var arr = tag.split('/');
+		((arr[0] < 8 && arr[2] < Math.pow(4, 2)) || (arr[0] >= 8 && arr[2] < Math.pow(4, 2)-1)) && (v['b'] = Math.random());
+		return {
+			name: v['姓名'],
+			thumb: './portrait/thumb/' + v['姓名'] + '.jpg',
+			src: './portrait/' + v['姓名'] + '.jpg',
+			ord: v['序号'],
+			a: v['a'],
+			b: v['b']
+		};
 	});
+	return new Promise(function(resolve, reject){
+		resolve(users);
+	});
+})
+.then(function(users){
+	var tpl = '<ul>';
+	users.forEach(function(v){
+		tpl += '<li><span style="background-image: url('+v['thumb']+')"></span></li>'
+	});
+	tpl += '</ul>'
+	$box.find('.front').append(tpl);
+	var $spans = $box.find('span');
+	var rand = Math.floor(400*Math.random());
+	// setInterval(function(){
+	// 	$spans.eq(Math.floor(400*Math.random())).css({
+	// 		left: '-35px',
+	// 		top: '-35px',
+	// 		width: '100px',
+	// 		height: '100px'
+	// 	}).parent().css({
+	// 		'zIndex': 999
+	// 	}).siblings().css({
+	// 		'zIndex': 0
+	// 	}).find('span').css({
+	// 		width: '29px',
+	// 		height: '29px',
+	// 		left: '1px',
+	// 		top: '1px'
+	// 	})
+	// }, 100);
 });
 
 
 
 
-new mo.Tween({
+// new mo.Tween({
 
-	repeat: 0,
-	delay: 2000,
-	duration: 1500,
-	onStart: function(){
-		$box.css({
-			'transform': 'translate3D(-50%, -50%, -3000.5px)'
-		});
-	},
-	onUpdate: function(progress){
-		var bounceProgress = bouncyEasing(progress);
-		$box.css({
-			'transform': 'translate3D(-50%, -50%, '+(-300.5-(1-bounceProgress)*3000.5)+'px)'
-		});
-	},
-	onComplete: function(){
-		new mo.Tween({
-			repeat: 0,
-			delay: 1000,
-			duration: 1500,
-			onUpdate: function(progress){
-				var bounceProgress = bouncyEasing(progress);
-				$box.css({
-					'transform': 'translate3D(-50%, -50%, -300.5px) rotateY('+(90*bounceProgress)+'deg) scaleZ('+bounceProgress+')'
-				});
-			}
-		}).run();
-	}
+// 	repeat: 0,
+// 	delay: 2000,
+// 	duration: 1500,
+// 	onStart: function(){
+// 		$box.css({
+// 			'transform': 'translate3D(-50%, -50%, -3000.5px)'
+// 		});
+// 	},
+// 	onUpdate: function(progress){
+// 		var bounceProgress = bouncyEasing(progress);
+// 		$box.css({
+// 			'transform': 'translate3D(-50%, -50%, '+(-300.5-(1-bounceProgress)*3000.5)+'px)'
+// 		});
+// 	},
+// 	onComplete: function(){
+// 		new mo.Tween({
+// 			repeat: 0,
+// 			delay: 1000,
+// 			duration: 1500,
+// 			onUpdate: function(progress){
+// 				var bounceProgress = bouncyEasing(progress);
+// 				$box.css({
+// 					'transform': 'translate3D(-50%, -50%, -300.5px) rotateY('+(90*bounceProgress)+'deg) scaleZ('+bounceProgress+')'
+// 				});
+// 			}
+// 		}).run();
+// 	}
 
-}).run();
+// }).run();
 
 new mo.Burst({
 	shape: 'circle',
@@ -63,11 +98,5 @@ new mo.Burst({
 	x: '50%',
 	y: '50%'
 })
-// var $box = $('.box');
-// var tpl = '';
-// for(var i=0;i<300;i++){
-// 	tpl += '<li><span></span></li>'
-// }
-// $box.append(tpl);
-// var $spans = $box.find('span');
+
 //先打散，to do

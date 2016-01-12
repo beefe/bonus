@@ -5,7 +5,7 @@ new Promise(function(resolve, reject){
 	json.forEach(function(v, k){
 		fs.exists('./portrait/' + v['姓名'] + '.jpg', function(exists){
 			if(!exists){
-				errArr.push(v['姓名']+'----入职时间'+v['入职时间']);
+				errArr.push(v['姓名']+'----a'+v['a']);
 			}
 			if(k === json.length - 1){
 				resolve(errArr);

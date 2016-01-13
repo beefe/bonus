@@ -2,7 +2,6 @@
 
 var $ = require('jquery');
 var mo = require('mo');
-var xxx = 329;
 var $box = $('.js-box');
 var bouncyEasing = mo.easing.path('M0,100 C6.50461245,96.8525391 12.6278439,88.3497543 16.6678547,0 C16.6678547,-1.79459817 31.6478577,115.871587 44.1008572,0 C44.1008572,-0.762447191 54.8688736,57.613472 63.0182497,0 C63.0182497,-0.96434046 70.1500549,29.0348701 76.4643231,0 C76.4643231,0 81.9085007,16.5050125 85.8902733,0 C85.8902733,-0.762447191 89.4362183,8.93311024 92.132216,0 C92.132216,-0.156767385 95.0157166,4.59766248 96.918051,0 C96.918051,-0.156767385 98.7040751,1.93815588 100,0');
 
@@ -30,32 +29,54 @@ promise.then(function(json){
 	});
 })
 .then(function(users){
+	(users.length) > 400 && (users.length = 400);
+
+	var len = users.length;
 	var tpl = '<ul>';
+	users.length = 400;
 	users.forEach(function(v){
-		tpl += '<li><span style="background-image: url('+v['thumb']+')"></span></li>'
+		tpl += '<li><span style=""></span></li>' //background-image: url('+v['thumb']+')
 	});
 	tpl += '</ul>'
 	$box.find('.front').append(tpl);
-	var $spans = $box.find('span');
-	var rand = Math.floor(400*Math.random());
-	// setInterval(function(){
-	// 	$spans.eq(Math.floor(400*Math.random())).css({
-	// 		left: '-35px',
-	// 		top: '-35px',
-	// 		width: '100px',
-	// 		height: '100px'
-	// 	}).parent().css({
-	// 		'zIndex': 999
-	// 	}).siblings().css({
-	// 		'zIndex': 0
-	// 	}).find('span').css({
-	// 		width: '29px',
-	// 		height: '29px',
-	// 		left: '1px',
-	// 		top: '1px'
-	// 	})
-	// }, 100);
+
+
+	var $lis = $box.find('li');
+	var $start = $('.start');
+	var $stop = $('.stop');
+	var timer = null;
+	$start.click(function(){
+		timer = setInterval(function(){
+			var rand = Math.floor(len*Math.random());
+			$lis.eq(rand).css({
+				'zIndex': 1
+			}).find('span').css({
+				width: '100px',
+				height: '100px',
+				left: '-35px',
+				top: '-35px'
+			}).parent().siblings().css({
+				'zIndex': 0
+			}).find('span').css({
+				width: '29px',
+				height: '29px',
+				left: '1px',
+				top: '1px'
+			});
+		}, 100);
+	});
+	$stop.click(function(){
+		var rand = Math.floor(len*Math.random());
+		console.log(timer);
+		if(!timer){
+			return false;
+		}
+		clearInterval(timer);
+	});
 });
+
+
+
 
 
 
@@ -95,8 +116,16 @@ promise.then(function(json){
 new mo.Burst({
 	shape: 'circle',
 	fill: ['deeppink', 'cyan', 'orange'],
-	x: '50%',
-	y: '50%'
+	x: '10%',
+	y: '10%'
 })
 
-//先打散，to do
+new mo.Burst({
+	shape: 'circle',
+	fill: ['deeppink', 'cyan', 'orange'],
+	x: '20%',
+	y: '30%'
+})
+
+//
+

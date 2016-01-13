@@ -10,7 +10,8 @@
     "email": "wenliang.web@gmail.com"
   },
   "dependencies": {
-    "xls-to-json": "*"
+    "xls-to-json": "*",
+    "gm": "*"
   },
   "engines": {
     "node": ">=4"

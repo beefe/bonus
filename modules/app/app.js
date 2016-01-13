@@ -29,11 +29,8 @@ promise.then(function(json){
 	});
 })
 .then(function(users){
-	(users.length) > 400 && (users.length = 400);
-
 	var len = users.length;
 	var tpl = '<ul>';
-	users.length = 400;
 	users.forEach(function(v){
 		tpl += '<li><span style=""></span></li>' //background-image: url('+v['thumb']+')
 	});

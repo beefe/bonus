@@ -27,7 +27,8 @@ body{
 }
 .start,
 .stop,
-.upset{
+.upset,
+.clear{
 	width: 30px;
 	height: 30px;
 	line-height: 30px;
@@ -37,9 +38,13 @@ body{
 	background-color: red;
 	border-radius: 30px;
 	position: absolute;
-	right: 20px;
 	bottom: 20px;
 	cursor: pointer;
+}
+.start,
+.stop,
+.upset{
+	right: 20px;
 }
 .pos2{
 	bottom: 60px;
@@ -55,6 +60,18 @@ body{
 }
 .pos6{
 	bottom: 220px;
+}
+.pos8{
+	bottom: 500px;
+	opacity: 0;
+}
+.pos7{
+	left: 20px;
+	bottom: 20px;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 40px;
 }
 
 .perspective{
@@ -125,4 +142,8 @@ ul{
     		padding: 10px;
 		}
 	}
+}
+
+.front ul{
+	perspective: 200px;
 }

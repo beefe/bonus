@@ -9,7 +9,7 @@ fis.config.merge({
     },
     roadmap: {
         domain: domain,
-        relative: true,
+        relative: false,
         path: [
             {
                 reg: /^\/js\/.*$/,

@@ -5,27 +5,28 @@
 	<title>欢乐大抽奖</title>
 	<link rel="stylesheet" href="css/index.less">
 </head>
-<body>
+<body onselectstart="false" ondragestart="false">
 
 <div class="scene1"></div>
 
 <div class="scene2">
 	<div class="perspective">
 		<div class="cube-box js-box">
-			<div class="cube-item front"></div>
-			<div class="cube-item top">2</div>
-			<div class="cube-item back">3</div>
-			<div class="cube-item bottom">4</div>
-			<div class="cube-left">5</div>
-			<div class="cube-right">6</div>
+			<div class="cube-item front"><ul></ul></div>
+			<div class="cube-item top"><ul></ul></div>
+			<div class="cube-item back"><ul></ul></div>
+			<div class="cube-item bottom"><ul></ul></div>
+			<div class="cube-left left"><ul></ul></div>
+			<div class="cube-right right"><ul></ul></div>
 		</div>
 	</div>
-	<div class="start pos6" data-level="0">特</div>
-	<div class="start pos5" data-level="1">一</div>
-	<div class="start pos4" data-level="2">二</div>
-	<div class="start pos3" data-level="3">三</div>
+	<div class="start pos6" data-level="a">特</div>
+	<div class="start pos5" data-level="b">一</div>
+	<div class="start pos4" data-level="c">二</div>
+	<div class="start pos3" data-level="d">三</div>
 	<div class="stop pos2">停</div>
 	<div class="upset pos1">乱</div>
+	<ul></ul>
 </div>
 
 <script src="js/mod.js"></script>

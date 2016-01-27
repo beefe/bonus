@@ -473,6 +473,9 @@ function hit(index, level){
 
 //打乱
 function upset(){
+	if(!confirm('确定打乱吗？')){
+		return false;
+	}
 	clickable = false;
 	new mo.Tween({
 		repeat: 0,

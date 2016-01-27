@@ -280,6 +280,9 @@ function hit(index, level){
 		'background-image': 'url('+userArr[index].src+')'
 	});
 
+	if(!hittedUser[level]){
+		hittedUser[level] = [];
+	};
 	hittedUser[level].push(userArr[index]);
 	//中奖名单本地存储, a/b/c/d
 	localStorage.setItem('hitted', JSON.stringify(hittedUser));

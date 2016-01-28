@@ -477,6 +477,8 @@ function hit(index, level){
 						opacity: 1
 					}, 1000);
 				}
+				//移除audio
+				$('audio').remove();
 			}
 		}).run();
 	})

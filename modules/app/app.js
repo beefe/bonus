@@ -113,12 +113,12 @@ var filterUserArr = {};
 			var $par = getRotate(i).$parent;
 			var len = localData[i].length;
 			var row = getRotate(i).row;
-			var maxWid = (height - 1)/row - 1;
+			var maxWid = (height - 1)/row;
 			$.each(localData[i], function(key, val){
 				var $li = $('<li data-name="'+val['name']+'"><span style="background-image: url('+val['src']+')"></span><div class="username">'+val['name']+'</div></li>');
 				$li.css({
-					width: maxWid+'px',
-					height: maxWid+'px',
+					width: maxWid-1+'px',
+					height: maxWid-1+'px',
 					left: 1+key%row*maxWid+'px',
 					top: 1+Math.floor(key/row)*maxWid+'px'
 				});
@@ -159,6 +159,10 @@ promise.then(function(json){
 	var len = users.length;
 	var tpl = '';
 	var filter = [];
+	//打乱
+	users.sort(function(){
+		return Math.random() > 0.5 ? 1 : -1;
+	});
 	users.forEach(function(v, k){
 		//过滤中奖者
 		if(!(v['name'] in filterUserArr)){
@@ -518,7 +522,7 @@ function upset(){
 			y: curPos.y - offset.top
 		};
 
-		new mo.Tween({
+		var _animation = new mo.Tween({
 			repeat: 0,
 			delay: 500+5*key,
 			duration: 500,
@@ -535,6 +539,9 @@ function upset(){
 					left: curPos.x+(oppose.x+randPos[key].x-curPos.x)*bounceProgress+'px',
 					top: curPos.y+(oppose.y+randPos[key].y-curPos.y)*bounceProgress+'px'
 				});
+			},
+			onComplete: function(){
+				_animation = null;
 			}
 		}).run();
 		//计算每个人应该回到的位置
@@ -549,7 +556,7 @@ function upset(){
 			y: Math.floor(moveToIndex/20)*base+1
 		};
 		//复位
-		new mo.Tween({
+		var _animation1 = new mo.Tween({
 			repeat: 0,
 			delay: 3000+5*key,
 			duration: 500,
@@ -561,6 +568,9 @@ function upset(){
 					left: (oppose.x+randPos[key].x)+(backPos.x-oppose.x-randPos[key].x)*bounceProgress+'px',
 					top: (oppose.y+randPos[key].y)+(backPos.y-oppose.y-randPos[key].y)*bounceProgress+'px'
 				});
+			},
+			onComplete: function(){
+				_animation1 = null;
 			}
 		}).run();
 	});

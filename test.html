@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="index_page"> 
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width" />
+<meta name="baidu-tc-cerfication" content="bfce60f87fb38b64c36ee8f3841f97f2" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="format-detection" content="email=no" />
+<meta name="format-detection" content="address=no;">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<title>random</title>
+<style type="text/css">
+    #sourceChart{
+        height: 400px;
+        margin-left: -1150px;
+    }
+</style>
+</head>
+
+<body>
+<div class="body_div">
+    <div id="sourceChart"></div>
+</div>
+<script type="text/javascript" src="http://zeptojs.com/zepto.js"></script>
+<script>
+    (function($) {
+ 
+    var canvas,context;
+    var stepXArr=[],stepYArr=[],xStepWidth=0;
+    var xAxisHeight = 0 ,yAxisWidth = 0;
+    var heightVal = 0;//高度值对应数据比例
+ 
+    /**
+     * 画X轴
+     * */
+    var drawXAxis = function (xAxisData) {
+        context.beginPath();
+        //画X轴横线
+        context.moveTo(yAxisWidth - 6, canvas.height - xAxisHeight);
+        context.lineTo(canvas.width-yAxisWidth,canvas.height - xAxisHeight);
+        context.lineWidth = 0.5;
+        //画刻度、加标签
+        var len = xAxisData.length;
+        xStepWidth = (canvas.width-2*yAxisWidth)/(len-0.5);
+        for(var i = 0;i < len;i++){
+            //画刻度，默认刻度高度为6个像素
+            context.moveTo(yAxisWidth + i*xStepWidth, canvas.height - xAxisHeight);
+            context.lineTo(yAxisWidth + i*xStepWidth,canvas.height - xAxisHeight + 6);
+            //画标签，默认字体为14个像素
+            context.font = 'normal normal normal 10px 微软雅黑';
+           //字体居中在刻度中间
+            context.fillText(xAxisData[i],
+                yAxisWidth + (i+0.5)*xStepWidth - xAxisData[i].length*14/2,
+                canvas.height - xAxisHeight + 14);
+            //缓存刻度位置，用于画网格
+            stepXArr.push(yAxisWidth + (i+1)*xStepWidth);
+        }
+ 
+        context.stroke();
+        context.lineWidth = 0.5;
+    }
+ 
+    /**
+     * 画Y轴
+     * */
+    var drawYAxis = function(yMax,step) {
+        //y轴最大值多出数据最大值半个空格        
+        yMax = Math.ceil(yMax+0.5*yMax/step);
+        context.beginPath();
+        //画X轴横线
+        context.moveTo(yAxisWidth, xAxisHeight);
+        context.lineTo(yAxisWidth,canvas.height - xAxisHeight + 6);
+        //画刻度、加标签
+        var tickWidth = (canvas.height - 2*xAxisHeight )/step;
+        heightVal = (canvas.height - 2*xAxisHeight )/yMax;
+        for(var i = 0;i <= step;i++){
+            //画刻度，默认刻度高度为6个像素
+            context.moveTo(yAxisWidth, canvas.height - xAxisHeight - tickWidth * i);
+            context.lineTo(yAxisWidth - 6,canvas.height - xAxisHeight - tickWidth * i);
+            //画标签，默认字体为14个像素
+            context.font = 'normal normal 10px 微软雅黑';
+            //字体居中在刻度中间
+            context.fillText(Math.ceil(yMax/step) * i,
+                yAxisWidth-30,
+                canvas.height - xAxisHeight - tickWidth * i + 7);
+            //缓存刻度位置，用于画网格
+            stepYArr.push(canvas.height - xAxisHeight - tickWidth * i);
+        }
+        context.stroke();
+    }
+ 
+    /**
+     * 画网格
+     * */
+    var drawGrid = function() {
+        context.save();
+ 
+        context.strokeStyle = "#6e6e6e";
+        context.fillStyle = '#ffffff';
+        context.lineWidth = 0.5;
+ 
+        //画横线
+        var j = 0,stepX = (canvas.width - 2*yAxisWidth)/10,stepY = (canvas.height - 2*xAxisHeight)/10;
+        //10个像素位为单位,6个像素画线，4个像素空出来，成为虚线
+        for (var i = 0,len = stepYArr.length; i < len-1; i ++) {
+            context.beginPath();
+            for(j = 0;j < stepX;j++){
+                context.moveTo(yAxisWidth + j*10, stepYArr[i+1]);
+                context.lineTo(yAxisWidth + j*10 + 6,  stepYArr[i+1]);
+            }
+            context.stroke();
+        }
+ 
+        //画竖线
+        for (var i = 0,len = stepXArr.length; i < len-1; i ++) {
+            context.beginPath();
+            for(j = 0;j < stepY;j++){
+                context.moveTo(stepXArr[i],xAxisHeight + j*10 );
+                context.lineTo(stepXArr[i],xAxisHeight + j*10+6);
+            }
+            context.stroke();
+        }
+        context.restore();
+    }
+ 
+    /**
+     * 画线条
+     * */
+    var drawLine = function(lineData,color){
+        //循环数据源画线条
+        context.beginPath();
+        context.strokeStyle = color;
+        context.lineWidth = 1;
+        context.moveTo(stepXArr[0] - xStepWidth ,canvas.height - xAxisHeight - lineData[0]*heightVal);
+        for (var i = 1,len = lineData.length; i < len; i ++) {
+            context.lineTo(stepXArr[i] - xStepWidth ,canvas.height - xAxisHeight - lineData[i]*heightVal);
+        }
+        context.stroke();
+        //画圆点
+        /*for (var i = 0,len = lineData.length; i < len; i ++) {
+            context.beginPath();
+            context.fillStyle = 'rgba(' + (Math.random()*255).toFixed(0) + ', ' +
+                (Math.random()*255).toFixed(0) + ', ' +
+                (Math.random()*255).toFixed(0) + ', 1.0)';
+            context.arc(stepXArr[i] - xStepWidth/2 ,canvas.height - xAxisHeight - lineData[i]*heightVal,
+                7, 0, Math.PI*2, true);
+            context.fill();
+        }*/
+    }
+    /**
+     * 画柱子
+     * */
+    var drawBar = function(barData,colorArr){
+        var barWidth = xStepWidth/2;//定义柱子宽度
+        //循环数据源画矩形
+        for (var i = 0,len = barData.length; i < len; i ++) {
+            context.beginPath();
+            context.fillStyle = colorArr[i];
+            context.fillRect(stepXArr[i] - xStepWidth/2 - barWidth/2,canvas.height - xAxisHeight - barData[i]*heightVal,
+                barWidth,barData[i]*heightVal);
+            context.fill();
+        }
+    }
+ 
+    var methods = {
+        init: function(options) {
+ 
+            // 在每个元素上执行方法
+            return this.each(function() {
+                var $this = $(this);
+                // 尝试去获取settings，如果不存在，则返回“undefined”
+                var settings = $this.data("lineChart");
+ 
+                // 如果获取settings失败，则根据options和default创建它
+                // if (typeof settings === "undefined") {
+                var date = new Date();
+                var month = date.getMonth()+1;
+                var day = date.getDate()
+                var dateArr = [];
+                for(var i=day-6;i<day+1;i++){
+                    dateArr.push(month+'-'+i);
+                }
+
+                //取样400
+                var sample = 400;
+                var temp = {};
+                for(var i=0;i<sample;i++){
+                    temp[i] = 0;
+                }
+                //执行4万次，每个样本平均100次
+                for(var j = 0; j < sample*10000; j++){
+                    var cur = Math.floor(Math.random()*sample);
+                    temp[cur]++;
+                }
+                var arr = [];
+                var index = [];
+                for(var k in temp){
+                    index.push(k);
+                    arr.push(temp[k]);
+                }
+
+                if (!settings) {
+                    var defaults = {
+                        width:300,
+                        height:160,
+                        xAxis: index,
+                        //xAxis:[1,2,3],
+                        //lineData:[[601,200,300,245,150,245,300]],
+                        lineData:[arr],
+                        lineColor:['#06a765','#ff6600'],
+                        //barData:[350,134,120,51,90],
+                        //colorArr:['#ae303e','#913730','#D49797','0x538FD3','#A34e5d'],
+                        onSomeEvent: function() {
+                        }
+                    };
+ 
+                    settings = $.extend({}, defaults, options);
+ 
+                    // 保存我们新创建的settings
+                    $this.data("lineChart", settings);
+                } else {
+                    //如果我们获取了settings，则将它和options进行合并（这不是必须的，你可以选择不这样做）
+                    settings = $.extend({}, settings, options);
+ 
+                    // 如果你想每次都保存options，可以添加下面代码：
+                    // $this.data("lineChart", settings);
+                }
+                canvas = document.createElement("canvas");
+                canvas.width = settings.width;
+                canvas.height = settings.height;
+                canvas.style.cssText = 'margin:0 auto;';
+                $this.append(canvas);
+                context = canvas.getContext('2d');
+                xAxisHeight = settings.height/10 ,yAxisWidth = settings.width/10;
+                drawXAxis(settings.xAxis);
+                var yMax = 0;
+                for(var i=0,len=settings.lineData.length;i<len;i++){
+                    var _yMax = Math.max.apply(null,settings.lineData[i]);
+                    if(_yMax>yMax){
+                        yMax = _yMax;
+                    }
+                }
+                drawYAxis(yMax,10);
+                drawGrid();
+                //画柱子drawBar(settings.barData,settings.colorArr);
+                for(var i=0,len=settings.lineData.length;i<len;i++){
+                    drawLine(settings.lineData[i],settings.lineColor[i]);
+                }
+            });
+        },
+        destroy: function(options) {
+            // 在每个元素中执行代码
+            return $(this).each(function() {
+                var $this = $(this);
+ 
+                // 执行代码
+ 
+                // 删除元素对应的数据
+                $this.removeData("lineChart");
+            });
+        },
+        val: function(options) {
+            // 这里的代码通过.eq(0)来获取选择器中的第一个元素的，我们或获取它的HTML内容作为我们的返回值
+            var someValue = this.eq(0).html();
+ 
+            // 返回值
+            return someValue;
+        }
+    };
+ 
+    $.fn.lineChart = function() {
+        var method = arguments[0];
+        if (methods[method]) {
+            method = methods[method];
+            arguments = Array.prototype.slice.call(arguments, 1);
+        } else if (typeof method === "object" || !method) {
+            method = methods.init;
+        } else {
+            $.error("Method" + method + "does not exist on jQuery.pluginName");
+            return this;
+        }
+        return method.apply(this, arguments);
+    };
+})(Zepto);
+$("#sourceChart").lineChart("init", {
+    width: 12000
+});
+//source
+//扇形
+/*CanvasRenderingContext2D.prototype.sector = function (x, y, radius, sDeg, eDeg) {
+    // 初始保存
+    this.save();
+    // 位移到目标点
+    this.translate(x, y);
+    this.beginPath();
+    // 画出圆弧
+    this.arc(0,0,radius,sDeg, eDeg,false);
+    // 再次保存以备旋转
+    this.save();
+    // 旋转至起始角度
+    this.rotate(eDeg);
+    // 移动到终点，准备连接终点与圆心
+    this.moveTo(radius,0);
+    // 连接到圆心
+    this.lineTo(0,0);
+    // 还原
+    this.restore();
+    // 旋转至起点角度
+    this.rotate(sDeg);
+    // 从圆心连接到起点
+    this.lineTo(radius,0);
+    this.closePath();
+    // 还原到最初保存的状态
+    this.restore();
+    return this;
+}
+
+function pieChart(cfg){
+    var _default = {
+        el: $('#sourceChart'),
+        data:[0.30,0.40,0.30],
+        color:['#ff0000','#0f0','#00f'],
+        startDeg : Math.PI*5/4
+    };
+    this.opt = $.extend({},_default,cfg);
+    this.init();
+}
+pieChart.prototype = {
+    constructor : pieChart,
+    init: function(){
+        canvas = document.createElement("canvas");
+        canvas.width = 300;
+        canvas.height = 160;
+        canvas.style.cssText = 'margin:0 auto;';
+        this.opt.el.append(canvas);
+        context = canvas.getContext('2d');
+        context.beginPath();
+        context.arc(140,80,80,0,Math.PI*2,true);
+        context.stroke();
+        //context.closePath();
+
+        var deg = Math.PI/180;
+        var startDeg = this.opt.startDeg;
+        for(var i = 0,len = this.opt.color.length;i<len;i++){
+            context.fillStyle=this.opt.color[i];
+            context.sector(140,80,80,startDeg,startDeg+Math.PI*2*this.opt.data[i]).fill();
+            context.fillText(this.opt.data[i]*100+'%',10,90);
+            context.font = 'normal normal 10px 微软雅黑';
+            //debugger;
+            startDeg += Math.PI*2*this.opt.data[i];
+        }
+
+    }
+};
+new pieChart();*/
+
+</script>
+<script>
+    $('.flowBar>a').on('click',function(){
+        $('.flowBar>a').removeClass('cur');
+        $(this).addClass('cur');
+        var _index = $(this).attr('data-index');
+        $('.flowCon').hide();
+        $('.flowCon[data-index="'+_index+'"]').show();
+    });
+</script>
+</body>
+</html>

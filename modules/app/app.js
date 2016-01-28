@@ -2,6 +2,7 @@
 
 var $ = require('jquery');
 var mo = require('mo');
+var $body = $('body');
 var $box = $('.js-box');
 var $scene1 = $('.scene1');
 var $scene2 = $('.scene2');
@@ -66,8 +67,8 @@ function getRotate(level, progress){
 
 //盒子初始化
 var $lis = null;
-var windowWidth = $('body').width();
-var windowHeight = $('body').height();
+var windowWidth = $body.width();
+var windowHeight = $body.height();
 // height is box height
 var height = Math.min(windowHeight-20, 800);
 if(!(height%20)){
@@ -195,7 +196,7 @@ promise.then(function(json){
 		if(!clickable){
 			return false;
 		}
-		if(interval && Date.now() - interval < 8*1000){
+		if(interval && Date.now() - interval < 6*1000){
 			return;
 		}
 		var len = $lis.length;
@@ -212,6 +213,7 @@ promise.then(function(json){
 				y: offsetY,
 				count: 10
 			});
+			$body.append('<audio src="./a.mp3" preload="preload" autoplay="autoplay">');
 		}, 100);
 		level = $(this).attr('data-level');
 	});
@@ -290,7 +292,9 @@ function hit(index, level){
 	hittedUser[level].push(userArr[index]);
 	//中奖名单本地存储, a/b/c/d
 	localStorage.setItem('hitted', JSON.stringify(hittedUser));
-
+	setTimeout(function(){
+		$body.append('<audio src="./hit.mp3" preload="preload" autoplay="autoplay">');
+	}, 500);
 	new Promise(function(resolve, reject){
 		//放大
 		new mo.Tween({
@@ -669,7 +673,7 @@ var dragTimer = null;
 var drag = false;
 var clicked = false;
 //旋转盒子
-$('body').on('mousedown', function(e){
+$body.on('mousedown', function(e){
 	if(!clickable){
 		return false;
 	}
@@ -761,6 +765,29 @@ $('.clear').click(function(){
 });
 
 $(document).on('mouseleave', function(){
-	$('body').trigger('mouseup');
+	$body.trigger('mouseup');
 });
 
+var startTimer = setInterval(function(){
+	var left = windowWidth*Math.random();
+	var top = windowHeight*Math.random();
+	burst({
+		x: left,
+		y: top,
+		count: 10
+	});
+}, 200);
+
+setTimeout(function(){
+	clearInterval(startTimer);
+	$scene2.animate({
+		opacity: 1,
+		left: 0
+	}, 1000);
+}, 2000);
+
+// var $audio = $('<audio src="./bg.mp3" preload="preload" autoplay="autoplay" loop="loop">');
+// $audio[0].volume = 0.1;
+// $body.on('dblclick', function(){
+// 	$audio[0].muted = !$audio[0].muted;
+// });
